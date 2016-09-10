@@ -1,0 +1,81 @@
+graph 1 28.602 28.297
+node 1 10 20
+node 2 15 25
+node 3 20 30
+node 4 25 35
+node 5 30 40
+node 6 35 45
+node 7 40 50
+node 8 45 55
+node 9 50 60
+node 10 55 65
+node 11 60 70
+node 12 65 75
+node 13 70 80
+node 14 75 85
+node 15 80 90
+node 16 85 95
+node 17 90 100
+node 18 95 105
+node 19 100 110
+node 20 105 115
+node 21 110 120
+node 22 115 125
+node 23 120 130
+node 24 125 135
+node 25 130 140
+node 26 135 145
+node 27 140 150
+node 28 145 155
+node 29 150 160
+node 30 155 165
+node 31 160 170
+node 32 165 175
+node 33 170 180
+node 34 175 185
+node 35 180 190
+node 36 185 195
+node 37 190 200
+node 38 195 198
+node 39 200 196
+node 40 197 194
+node 41 194 192
+node 42 191 190
+node 43 188 188
+node 44 185 186
+node 45 182 184
+node 46 179 182
+node 47 176 180
+node 48 173 178
+node 49 170 176
+node 50 167 174
+edge 1 2
+edge 2 3
+edge 3 4
+edge 4 5
+edge 5 6
+edge 6 7
+edge 7 8
+edge 8 9
+edge 9 10
+edge 10 11
+edge 11 12
+edge 12 13
+edge 13 14
+edge 14 15
+edge 15 16
+edge 16 17
+edge 17 18
+edge 18 19
+edge 19 20
+edge 20 21
+edge 21 22
+edge 22 23
+edge 23 24
+edge 24 25
+edge 25 26
+edge 26 27
+edge 27 28
+edge 28 29
+edge 29 30
+edge 30 31

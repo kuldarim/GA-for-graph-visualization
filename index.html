@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Genetic Algorithm</title>
+    <link rel="icon" href="/favicon.ico?v2" type="image/x-icon" />
+    <link rel="shortcut icon" href="/favicon.ico?v2" type="image/x-icon" />
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css"/>
+    <!-- bring in styles -->
+    <link rel="stylesheet" type="text/css" href="css/base.css">
+</head>
+<body ng-controller="GeneticAlgorithmCtrl as vm" style="padding: 0 40px;" ng-keypress="vm.handleKeyPress($event)">
+    <div>
+        <div class="page-header">
+            <h1>Genetic algorithm <small>for graphs</small></h1>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-3">
+                <form>
+                    <div class="bs-callout bs-callout-primary">
+                        <h4>Graph configuration</h4>
+                        <div class="form-group">
+                            <label for="populationSize">Number of graphs in population <small style="color: #777;">(population size)</small></label>
+                            <input type="text" class="form-control" id="populationSize" placeholder="10" ng-model="vm.populationConfig.populationSize">
+                        </div>
+                        <div class="form-group">
+                            <label for="geneSize">Number of nodes in graph <small style="color: #777;">(graph size)</small></label>
+                            <input type="text" class="form-control" id="geneSize" placeholder="10" ng-model="vm.populationConfig.geneSize">
+                        </div>
+                        <div class="form-group">
+                            <label for="pictureSize">Size of picture in pixels</label>
+                            <input type="text" class="form-control" id="pictureSize" placeholder="500" ng-model="vm.populationConfig.pictureSize">
+                        </div>
+                        <div class="form-group">
+                            <label>Initial population creation type</label>
+                            <select class="form-control"
+                                    ng-model="vm.populationConfig.generationType"
+                                    ng-options="generationType.name for generationType in vm.generationTypes">
+                            </select>
+                        </div>
+                        <div class="form-group" ng-if='vm.populationConfig.generationType.code === "UPLOAD"'>
+                            <label>
+                                <input type="file" id="graph-data" name="graph-data"/>
+                            </label>
+                            <button class="btn btn-classic" ng-click="vm.applyGraph()">Apply graph</button>
+                        </div>
+                    </div>
+
+                    <div class="bs-callout bs-callout-warning">
+                        <h4>Mutation configuration</h4>
+                        <div class="form-group">
+                            <label for="mutationRate">Chance of mutation in percents</label>
+                            <input type="text" class="form-control" id="mutationRate" placeholder="0.1" ng-model="vm.populationConfig.mutationRate">
+                        </div>
+                        <div class="form-group">
+                            <label>Mutation type</label>
+                            <select class="form-control"
+                                    ng-model="vm.populationConfig.mutationType"
+                                    ng-options="mutationType.name for mutationType in vm.mutationTypes">
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="bs-callout bs-callout-danger">
+                        <h4>Crossover configuration</h4>
+                        <div class="form-group">
+                            <label>Crossover type</label>
+                            <select class="form-control"
+                                    ng-model="vm.populationConfig.crossoverType"
+                                    ng-options="crossoverType.name for crossoverType in vm.crossoverTypes">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="numberOfParents">How many parents select for crossover</label>
+                            <input type="text" class="form-control" id="numberOfParents" placeholder="8" ng-model="vm.populationConfig.numberOfParents">
+                        </div>
+                        <div class="form-group">
+                            <label for="numberOfChildren">How many offspring to generate</label>
+                            <input type="text" class="form-control" id="numberOfChildren" placeholder="4" ng-model="vm.populationConfig.numberOfChildren">
+                        </div>
+                    </div>
+
+                    <div class="bs-callout bs-callout-default">
+                        <h4>Fitness configuration</h4>
+                        <div class="form-group">
+                            <label>Fitness type</label>
+                            <select class="form-control"
+                                    ng-model="vm.populationConfig.fitnessType"
+                                    ng-options="fitnessType.name for fitnessType in vm.fitnessTypes">
+                            </select>
+                        </div>
+                        <div class="form-group" ng-if='vm.populationConfig.fitnessType.code != "CLOSEST"'>
+                            <label for="fitnessRate">Fitness rate</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="fitnessRate"
+                                   placeholder="Used in fitness function"
+                                   ng-model="vm.populationConfig.fitnessConfig.fitnessRate">
+                        </div>
+                        <!-- For closes fitness-->
+                        <div class="form-group" ng-if='vm.populationConfig.fitnessType.code === "CLOSEST"'>
+                            <label for="distanceFrom">Distance from</label>
+                            <input type="text" class="form-control" id="distanceFrom" placeholder="5"
+                                   ng-model="vm.populationConfig.fitnessConfig.distanceFrom">
+                        </div>
+                        <div class="form-group" ng-if='vm.populationConfig.fitnessType.code === "CLOSEST"'>
+                            <label for="distanceTo">Distance to</label>
+                            <input type="text" class="form-control" id="distanceTo" placeholder="5"
+                                   ng-model="vm.populationConfig.fitnessConfig.distanceTo">
+                        </div>
+                        <!-- For sector fitness-->
+                        <div class="form-group" ng-if='vm.populationConfig.fitnessType.code === "SECTORS"'>
+                            <label for="horizontalTicks">Horizontal ticks number</label>
+                            <input type="text" class="form-control" id="horizontalTicks" placeholder="5"
+                                   ng-model="vm.populationConfig.fitnessConfig.horizontalTicks">
+                        </div>
+                        <div class="form-group" ng-if='vm.populationConfig.fitnessType.code === "SECTORS"'>
+                            <label for="verticalTicks">Vertical ticks number</label>
+                            <input type="text" class="form-control" id="verticalTicks" placeholder="5"
+                                   ng-model="vm.populationConfig.fitnessConfig.verticalTicks">
+                        </div>
+                        <!-- For sector fitness-->
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-9">
+                <div class="bs-callout bs-callout-success">
+                    <h4>Stop criteria configuration</h4>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="stopCriteria">Fitness value, when to stop generation</label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="stopCriteria"
+                                       placeholder="Used in population loop"
+                                       ng-model="vm.populationConfig.fitnessConfig.stopCriteria">
+                            </div>
+                            <div class="form-group">
+                                <label for="numberOfExperiments">Number of experiments</label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="numberOfExperiments"
+                                       placeholder="50"
+                                       ng-model="vm.numberOfExperiments">
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <button class="btn btn-primary" ng-click="vm.start()">Start</button>
+                            <button class="btn btn-secondary" ng-click="vm.stop()">Stop</button>
+                            <button class="btn btn-secondary" ng-click="vm.pause()">Pause</button>
+                            <button class="btn btn-secondary" ng-click="vm.draw()">Draw</button>
+                            <small>Use 'Q' 'W' 'E' 'R' to initiate these actions</small>
+                            <div class="form-group" style="margin-top: 10px; margin-bottom: 0;">
+                                <label>Number of experiment: {{vm.numberOfDoneExperiments}}</label>
+
+                            </div>
+                            <div class="form-group">
+                                <label>Generation: {{vm.populationStatus.generationCount}}</label>
+                                <br>
+                                <label>Initial fitness: {{vm.populationStatus.initialFitness | number: 2}}</label>
+                                <br>
+                                <label>Best fitness: {{vm.populationStatus.bestGeneCost | number: 2}}</label>
+                                <br>
+                                <label>Difference: {{(vm.populationStatus.initialFitness - vm.populationStatus.bestGeneCost) | number: 2}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Initial graph image</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div id="initialGraphImage"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Generated graph image</h3>
+                            </div>
+                            <div class="panel-body" >
+                                <div id="generatedGraphImage"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- bring in angular -->
+    <script src="node_modules/angular/angular.min.js"></script>
+    <!-- bring in vis.js -->
+    <script src="node_modules/vis/dist/vis.min.js"></script>
+    <!-- bring in lodash-->
+    <script src="node_modules/lodash/index.js"></script>
+
+    <!-- bring in our own stuff -->
+    <script src="js/app.js"></script>
+    <script src="js/GeneticAlgorithmCtrl.js"></script>
+    <script src="js/Population.js"></script>
+    <script src="js/PopulationStatus.js"></script>
+    <script src="js/Gene.js"></script>
+    <script src="js/Util.js"></script>
+    <script src="js/Sector.js"></script>
+</body>
+</html>
